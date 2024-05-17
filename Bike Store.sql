@@ -1,0 +1,65 @@
+CREATE DATABASE BIKE_STORES;
+USE BIKE_STORES;
+
+CREATE TABLE IF NOT EXISTS BIKE_DATA (
+ORDER_ID INT,
+CUSTOMERS VARCHAR(100),
+CITY VARCHAR(100),
+STATE VARCHAR(50),
+ORDER_DATE DATE,
+TOTAL_UNITS INT,
+REVENUE DECIMAL(20,5),
+PRODUCT_NAME VARCHAR(500),
+CATEGORY_NAME VARCHAR(100),
+BRAND_NAME VARCHAR(100),
+STORE_NAME VARCHAR(100),
+SALES_REP VARCHAR(100));
+
+
+LOAD DATA INFILE
+'E:/BikeStores.csv'
+INTO TABLE BIKE_DATA
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+SELECT * FROM BIKE_DATA;
+
+/* Q-1 Find total top 20 revenue earned by each customer grouped by brand and store name and order them from largest to smallest? */
+SELECT BRAND_NAME, STORE_NAME, CUSTOMERS, SUM(REVENUE) AS REVENUE FROM BIKE_DATA GROUP BY BRAND_NAME, STORE_NAME, CUSTOMERS ORDER BY REVENUE DESC LIMIT 20;
+/* Q-2 Find maximum revenue for unique Customers where state is Califonia (CA) with respect to order date? */
+SELECT DISTINCT CUSTOMERS, ORDER_DATE , MAX(REVENUE) AS MAXIMUM_REVENUE FROM BIKE_DATA WHERE STATE = 'CA' GROUP BY CUSTOMERS, ORDER_DATE ORDER BY MAXIMUM_REVENUE;
+/* Q-3 Find Unique customers whose revenue falls between 1000 to 8000 with respect to category and Sales representative? */
+SELECT DISTINCT CUSTOMERS, CATEGORY_NAME, SALES_REP, REVENUE FROM BIKE_DATA WHERE REVENUE BETWEEN 1000 AND 8000;
+/* Q-4 Find records where city is utica, duarte and Houston? */
+SELECT * FROM BIKE_DATA WHERE CITY IN('UTICA', 'DUARTE', 'HOUSTON');
+/* Q-5 Which is the most common product name based on maximum revenue? */
+SELECT CUSTOMERS, PRODUCT_NAME, CITY, max(REVENUE) AS MAXIMUM_REVENUE FROM BIKE_DATA GROUP BY CUSTOMERS, PRODUCT_NAME, CITY
+ORDER BY MAXIMUM_REVENUE DESC LIMIT 1; 
+/* Q-6 Find Category where name starts with 'C' and ends with 'S' for all records? */
+SELECT * FROM BIKE_DATA WHERE CATEGORY_NAME LIKE 'C%S';
+/* Q-7 Find revenue for customers where average revenue is greater than 1000 with respect to city, Brand Name and Order ID? */
+SELECT ORDER_ID, CITY, BRAND_NAME, CUSTOMERS, AVG(REVENUE) AS AVERAGE_REVENUE FROM BIKE_DATA GROUP BY ORDER_ID, CITY, BRAND_NAME, CUSTOMERS HAVING AVERAGE_REVENUE > 1000;
+/* Q-8 Find records where name of Customer starts with 'j' and inbetween alphabet is 'h' and last alphabet is 'n' */
+SELECT * FROM BIKE_DATA WHERE CUSTOMERS LIKE 'J%H%N';
+SELECT * FROM BIKE_DATA WHERE CUSTOMERS LIKE '___H%'; /* Customer list where 4th alphabet is 'h' */
+/* Q-9 Find all records where brand name is not surly and trek */
+SELECT * FROM BIKE_DATA WHERE BRAND_NAME NOT IN('SURLY','TREK');
+/* Q-10 Find records from BikeStores where revenue is equal to mimumum of revenue */
+SELECT * FROM BIKE_DATA WHERE REVENUE = (SELECT MIN(REVENUE) FROM BIKE_DATA);
+/* Q-11 Which particular day has the customer earned the minimum revenue? */
+ALTER TABLE BIKE_DATA
+ADD COLUMN `DAY` INT NOT NULL AFTER ORDER_DATE;
+UPDATE BIKE_DATA
+SET `DAY` = DAY(ORDER_DATE);
+SELECT CUSTOMERS, CITY, `DAY`, MIN(REVENUE) AS MINIMUM_REVENUE FROM BIKE_DATA GROUP BY CUSTOMERS, CITY, `DAY` ORDER BY MINIMUM_REVENUE LIMIT 3;
+/* Q-12  Find unique units when grouped by store name and sales representative for all number of customers. */
+SELECT DISTINCT TOTAL_UNITS, STORE_NAME, SALES_REP, COUNT(CUSTOMERS) AS NUMBER_OF_CUSTOMERS FROM BIKE_DATA
+GROUP BY TOTAL_UNITS, STORE_NAME, SALES_REP ORDER BY NUMBER_OF_CUSTOMERS;
+/* Q-13 Which month has total revenue more than 2000 with respect to customer and order date? */
+ALTER TABLE BIKE_DATA
+ADD COLUMN `MONTH` INT NOT NULL AFTER `DAY`;
+UPDATE BIKE_DATA
+SET `MONTH` = MONTH(ORDER_DATE);
+SELECT DISTINCT `MONTH`, ORDER_DATE, CUSTOMERS, SUM(REVENUE) AS TOTAL_REVENUE FROM BIKE_DATA GROUP BY `MONTH`, ORDER_DATE, CUSTOMERS HAVING TOTAL_REVENUE > 2000;

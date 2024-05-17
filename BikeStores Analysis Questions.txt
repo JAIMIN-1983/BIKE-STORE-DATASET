@@ -1,0 +1,15 @@
+BikeStores Analysis Questions: (1 file - BikeStores in Drive E:)
+
+Q-1 Find total revenue earned by each customer grouped by brand and store name and order them from largest to smallest?
+Q-2 Find maximum revenue for unique Customers where state is Califonia (CA) with respect to order date?
+Q-3 Find unique customers whose revenue falls between 1000 to 8000 with respect to category and Sales representative?
+Q-4 Find records where city is utica, duarte and Houston?
+Q-5 Which is the most common product name based on maximum revenue?
+Q-6 Find Category where name starts with 'C' and ends with 'S' for all records?
+Q-7 Find revenue for customers where average revenue is greater than 1000 with respect to city, Brand Name and Order ID?
+Q-8 Find records where name of Customer starts with 'j' and inbetween alphabet is 'h' and last alphabet is 'n'?
+Q-9 Find all records where brand name is not surly and trek.
+Q-10 Find records from BikeStores where revenue is equal to mimumum of revenue
+Q-11 Which particular day has the customer earned the minimum revenue?
+Q-12 Find unique units when grouped by store name and sales representative for all customers.
+Q-13 Which month has total revenue more than 2000 with respect to customer and order date?
